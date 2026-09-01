@@ -5,7 +5,13 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
 
-from cyberrisk_intel.domain.enums import Confidence, EntityType, ReviewStatus, Severity
+from cyberrisk_intel.domain.enums import (
+    Confidence,
+    EntityType,
+    PolicyDocumentType,
+    ReviewStatus,
+    Severity,
+)
 
 
 class StrictModel(BaseModel):
@@ -26,6 +32,7 @@ class PolicyInput(StrictModel):
     external_id: str | None = Field(default=None, max_length=120)
     title: str = Field(min_length=2, max_length=500)
     issuer: str = Field(min_length=2, max_length=300)
+    document_type: PolicyDocumentType = PolicyDocumentType.OTHER
     jurisdiction: str = "CN"
     published_date: date | None = None
     effective_date: date | None = None

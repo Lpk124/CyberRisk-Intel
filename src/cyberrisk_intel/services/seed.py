@@ -227,6 +227,7 @@ def seed_policies(session: Session) -> None:
                 external_id=item.external_id,
                 title=item.title,
                 issuer=item.issuer,
+                document_type=item.document_type.value,
                 jurisdiction=item.jurisdiction,
                 published_date=item.published_date,
                 effective_date=item.effective_date,
@@ -246,6 +247,17 @@ def seed_policies(session: Session) -> None:
                     valid_from=item.effective_date,
                 )
             )
+        else:
+            policy.title = item.title
+            policy.issuer = item.issuer
+            policy.document_type = item.document_type.value
+            policy.jurisdiction = item.jurisdiction
+            policy.published_date = item.published_date
+            policy.effective_date = item.effective_date
+            policy.summary = item.summary
+            policy.topics_json = json_dump(item.topics)
+            policy.review_status = item.status.value
+            policy.source_id = source.id
         for topic in item.topics:
             for risk_name in POLICY_RISK_MAP.get(topic, []):
                 risk = _get_by_name(session, RiskTheme, risk_name)

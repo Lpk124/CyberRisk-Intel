@@ -17,10 +17,18 @@ def test_json_importers_are_idempotent(session) -> None:
     second_event = import_events(session, DEMO / "events.json")
     session.flush()
 
-    assert first_policy.created == 10
+    assert first_policy.created == 30
     assert first_event.created == 12
-    assert second_policy.updated == 10
+    assert second_policy.updated == 30
     assert second_event.updated == 12
-    assert session.scalar(select(func.count()).select_from(Policy)) == 10
+    assert session.scalar(select(func.count()).select_from(Policy)) == 30
     assert session.scalar(select(func.count()).select_from(SecurityEvent)) == 12
     assert session.scalar(select(func.count()).select_from(PolicyClause)) == 0
+    document_types = set(session.scalars(select(Policy.document_type)))
+    assert {
+        "law",
+        "administrative_regulation",
+        "departmental_rule",
+        "normative_document",
+        "technical_framework",
+    } <= document_types

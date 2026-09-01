@@ -18,7 +18,7 @@ Build a real, locally runnable, tested Streamlit system that unifies policies, s
 ## Decisions Made
 - Python 3.12, Streamlit, SQLAlchemy, SQLite, Pandas, Plotly, Pydantic.
 - Current repository is empty; there is no legacy code or data to migrate.
-- Seed data is explicitly labeled demo data and is not presented as the final 30-policy/100-event research corpus.
+- Policy seed data contains 30 source-verified policy/governance records; event seed data remains explicitly labeled demo data and is not presented as the final 100-event research corpus.
 - KEV, ATT&CK, and CVE connectors are implemented as explicit commands; online synchronization is not required for offline tests.
 - AI and embeddings use an optional OpenAI-compatible interface and never gate core functionality.
 
@@ -33,6 +33,7 @@ Build a real, locally runnable, tested Streamlit system that unifies policies, s
   checks persisted and pending relations, and the integration fixture matches production.
 
 ## Status
-**Complete** - the runnable V1, reproducible environment, tests, security checks, browser smoke
-test, and documentation are finished. Corpus expansion and the 50-question RAG benchmark remain
-future data/research milestones and are not represented as completed results.
+**In progress** - the runnable V1, reproducible environment, tests, security checks, browser smoke
+test, and initial documentation are finished. The 30-record policy target is complete. Event corpus
+expansion and the 50-question RAG benchmark remain data/research milestones and are not represented
+as completed results.

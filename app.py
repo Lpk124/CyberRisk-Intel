@@ -39,13 +39,13 @@ with st.sidebar:
     st.caption("Cyber Governance & Risk Intelligence")
     page_name = st.radio("导航", list(PAGES), label_visibility="collapsed")
     st.divider()
-    if st.button("装载/刷新演示数据", use_container_width=True):
+    if st.button("装载/刷新演示数据", width="stretch"):
         with SessionFactory.begin() as seed_session:
             seed_demo(seed_session)
             count = rebuild_index(seed_session)
         st.success(f"演示数据已装载，索引 {count} 个分块。")
         st.rerun()
-    st.caption("演示数据用于验证工作流，不代表 V1 的 30 条政策/100 个事件目标已完成。")
+    st.caption("政策/治理文件已达 30 条；事件样本用于验证工作流，不代表 100 个事件目标已完成。")
 
 session = SessionFactory()
 try:

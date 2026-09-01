@@ -117,6 +117,7 @@ class Policy(Base, TimestampMixin):
     external_id: Mapped[str | None] = mapped_column(Text, unique=True)
     title: Mapped[str] = mapped_column(Text, nullable=False)
     issuer: Mapped[str] = mapped_column(Text, nullable=False)
+    document_type: Mapped[str] = mapped_column(Text, default="other")
     jurisdiction: Mapped[str] = mapped_column(Text, default="CN")
     published_date: Mapped[date | None] = mapped_column(Date)
     effective_date: Mapped[date | None] = mapped_column(Date)

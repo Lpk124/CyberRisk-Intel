@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 
 import pandas as pd
@@ -42,6 +43,34 @@ def monthly_events(session: Session) -> pd.DataFrame:
     frame = pd.DataFrame(rows, columns=["incident_date", "severity"])
     frame["month"] = pd.to_datetime(frame["incident_date"]).dt.to_period("M").astype(str)
     return frame.groupby(["month", "severity"], dropna=False).size().reset_index(name="count")
+
+
+def policy_document_distribution(session: Session) -> pd.DataFrame:
+    rows = session.execute(
+        select(Policy.document_type, func.count(Policy.id)).group_by(Policy.document_type)
+    ).all()
+    return pd.DataFrame(rows, columns=["document_type", "count"])
+
+
+def policy_topic_timeline(session: Session) -> pd.DataFrame:
+    rows = session.execute(select(Policy.published_date, Policy.topics_json)).all()
+    records: list[dict[str, int | str]] = []
+    for published_date, topics_json in rows:
+        if published_date is None:
+            continue
+        topics = json.loads(topics_json or "[]")
+        for topic in topics:
+            records.append({"year": published_date.year, "topic": str(topic)})
+    if not records:
+        return pd.DataFrame(columns=["year", "topic", "count", "share", "sample_size"])
+    frame = pd.DataFrame(records)
+    grouped = frame.groupby(["year", "topic"], as_index=False).size().rename(
+        columns={"size": "count"}
+    )
+    sample_sizes = frame.groupby("year").size().rename("sample_size")
+    grouped = grouped.merge(sample_sizes, on="year")
+    grouped["share"] = grouped["count"] / grouped["sample_size"]
+    return grouped
 
 
 def event_industry_matrix(session: Session) -> pd.DataFrame:

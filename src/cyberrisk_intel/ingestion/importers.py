@@ -132,6 +132,7 @@ def import_policies(session: Session, path: Path) -> IngestionStats:
                 updated += 1
             policy.title = item.title
             policy.issuer = item.issuer
+            policy.document_type = item.document_type.value
             policy.jurisdiction = item.jurisdiction
             policy.published_date = item.published_date
             policy.effective_date = item.effective_date

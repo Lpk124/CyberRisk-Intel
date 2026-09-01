@@ -9,7 +9,13 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from cyberrisk_intel.analytics.graph import neighborhood
-from cyberrisk_intel.analytics.landscape import data_quality, monthly_events, overview_metrics
+from cyberrisk_intel.analytics.landscape import (
+    data_quality,
+    monthly_events,
+    overview_metrics,
+    policy_document_distribution,
+    policy_topic_timeline,
+)
 from cyberrisk_intel.db.models import (
     AttackTechnique,
     DemoScenario,
@@ -71,7 +77,7 @@ def overview_page(session: Session) -> None:
         title="公开安全事件样本时间分布",
     )
     fig.update_yaxes(rangemode="tozero")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
     st.download_button("下载图表数据", _csv(totals), "monthly-events.csv", "text/csv")
     st.caption(
         f"数据快照：{metrics['generated_at']}｜筛选：全部已入库事件｜样本数：{metrics['events']}"
@@ -123,7 +129,7 @@ def events_page(session: Session) -> None:
             for e in filtered
         ]
     )
-    st.dataframe(frame, use_container_width=True, hide_index=True)
+    st.dataframe(frame, width="stretch", hide_index=True)
     st.download_button("下载事件数据", _csv(frame), "security-events.csv", "text/csv")
     chosen = st.selectbox("查看事件详情", filtered, format_func=lambda e: e.title_zh or e.title)
     st.write(chosen.summary_zh or chosen.summary)
@@ -154,7 +160,7 @@ def vulnerability_page(session: Session) -> None:
                 for v in vulns
             ]
         )
-        st.dataframe(frame, use_container_width=True, hide_index=True)
+        st.dataframe(frame, width="stretch", hide_index=True)
         if not frame.empty:
             st.download_button("下载漏洞数据", _csv(frame), "vulnerabilities.csv", "text/csv")
     with tab_attack:
@@ -172,7 +178,7 @@ def vulnerability_page(session: Session) -> None:
                 for t in techniques
             ]
         )
-        st.dataframe(frame, use_container_width=True, hide_index=True)
+        st.dataframe(frame, width="stretch", hide_index=True)
 
 
 def policies_page(session: Session) -> None:
@@ -184,7 +190,19 @@ def policies_page(session: Session) -> None:
     chosen = st.selectbox("政策", policies, format_func=lambda p: p.title)
     st.write(chosen.summary)
     topics = ", ".join(json_load(chosen.topics_json))
-    st.caption(f"发布主体：{chosen.issuer}｜发布日期：{chosen.published_date}｜主题：{topics}")
+    type_labels = {
+        "law": "法律",
+        "administrative_regulation": "行政法规",
+        "departmental_rule": "部门规章",
+        "normative_document": "规范性文件",
+        "national_standard": "国家标准",
+        "technical_framework": "技术框架",
+        "other": "其他治理文件",
+    }
+    document_type = type_labels.get(chosen.document_type, chosen.document_type)
+    st.caption(
+        f"文种：{document_type}｜发布主体：{chosen.issuer}｜发布日期：{chosen.published_date}｜主题：{topics}"
+    )
     if chosen.source:
         st.link_button("查看权威原文", chosen.source.url)
     relations = list(
@@ -256,7 +274,7 @@ def relations_page(session: Session) -> None:
     entity = st.selectbox("起点实体", entities, format_func=lambda x: entity_label(entity_type, x))
     depth = st.radio("跳数", [1, 2], horizontal=True)
     graph = neighborhood(session, entity_type, entity.id, depth=depth)
-    st.plotly_chart(_graph_figure(graph), use_container_width=True)
+    st.plotly_chart(_graph_figure(graph), width="stretch")
     edge_frame = pd.DataFrame(
         [
             {
@@ -269,11 +287,12 @@ def relations_page(session: Session) -> None:
             for a, b, data in graph.edges(data=True)
         ]
     )
-    st.dataframe(edge_frame, hide_index=True, use_container_width=True)
+    st.dataframe(edge_frame, hide_index=True, width="stretch")
 
 
 def trends_page(session: Session) -> None:
     st.title("趋势研究与数据质量")
+    st.subheader("安全事件趋势")
     monthly = monthly_events(session)
     if not monthly.empty:
         fig = px.line(
@@ -285,12 +304,73 @@ def trends_page(session: Session) -> None:
             labels={"month": "月份", "count": "样本数", "severity": "严重度"},
         )
         fig.update_yaxes(rangemode="tozero")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.download_button("下载趋势数据", _csv(monthly), "event-trends.csv", "text/csv")
+    st.subheader("政策主题变化")
+    policy_topics = policy_topic_timeline(session)
+    if not policy_topics.empty:
+        selected_topics = st.multiselect(
+            "政策主题",
+            sorted(policy_topics["topic"].unique()),
+            default=list(
+                policy_topics.groupby("topic")["count"]
+                .sum()
+                .nlargest(6)
+                .index
+            ),
+        )
+        filtered_topics = policy_topics[
+            policy_topics["topic"].isin(selected_topics)
+        ]
+        fig = px.bar(
+            filtered_topics,
+            x="year",
+            y="share",
+            color="topic",
+            barmode="group",
+            custom_data=["count", "sample_size"],
+            labels={"year": "发布年份", "share": "主题记录占比", "topic": "主题"},
+            title="政策主题记录占比（同一文件可含多个主题）",
+        )
+        fig.update_yaxes(rangemode="tozero", tickformat=".0%")
+        fig.update_traces(
+            hovertemplate="年份=%{x}<br>占比=%{y:.1%}<br>记录数=%{customdata[0]}<br>当年主题记录总数=%{customdata[1]}<extra></extra>"
+        )
+        st.plotly_chart(fig, width="stretch")
+        st.download_button(
+            "下载政策主题数据", _csv(policy_topics), "policy-topic-trends.csv", "text/csv"
+        )
+    policy_types = policy_document_distribution(session)
+    if not policy_types.empty:
+        type_labels = {
+            "law": "法律",
+            "administrative_regulation": "行政法规",
+            "departmental_rule": "部门规章",
+            "normative_document": "规范性文件",
+            "national_standard": "国家标准",
+            "technical_framework": "技术框架",
+            "other": "其他治理文件",
+        }
+        policy_types["文种"] = policy_types["document_type"].map(type_labels).fillna(
+            policy_types["document_type"]
+        )
+        fig = px.bar(
+            policy_types,
+            x="文种",
+            y="count",
+            text_auto=True,
+            labels={"count": "文件数"},
+            title="政策与治理文件文种分布",
+        )
+        fig.update_yaxes(rangemode="tozero")
+        st.plotly_chart(fig, width="stretch")
+        st.download_button(
+            "下载文种分布数据", _csv(policy_types), "policy-document-types.csv", "text/csv"
+        )
     quality = data_quality(session)
     st.subheader("数据质量")
     st.dataframe(
-        quality.style.format({"rate": "{:.1%}"}), hide_index=True, use_container_width=True
+        quality.style.format({"rate": "{:.1%}"}), hide_index=True, width="stretch"
     )
     st.caption("公开样本存在来源覆盖和披露偏差；本页面只提供描述性分析，不进行因果推断。")
 

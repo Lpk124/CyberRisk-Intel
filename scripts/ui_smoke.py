@@ -31,6 +31,7 @@ def main() -> None:
             ("综合情报检索", "返回"),
             ("安全事件", "SolarWinds"),
             ("关系探索", "跳数"),
+            ("趋势研究", "政策主题变化"),
             ("RAG 研究助手", "研究问题"),
             ("专题报告与场景示例", "数据快照"),
         ]:
@@ -58,7 +59,7 @@ def main() -> None:
     ]
     if actionable or actionable_requests:
         raise AssertionError("Browser errors: " + " | ".join(actionable + actionable_requests))
-    print("UI smoke test passed: overview, search, events, relations, RAG, reports")
+    print("UI smoke test passed: overview, search, events, relations, trends, RAG, reports")
 
 
 if __name__ == "__main__":

@@ -8,6 +8,16 @@ class ReviewStatus(StrEnum):
     REJECTED = "rejected"
 
 
+class PolicyDocumentType(StrEnum):
+    LAW = "law"
+    ADMINISTRATIVE_REGULATION = "administrative_regulation"
+    DEPARTMENTAL_RULE = "departmental_rule"
+    NORMATIVE_DOCUMENT = "normative_document"
+    NATIONAL_STANDARD = "national_standard"
+    TECHNICAL_FRAMEWORK = "technical_framework"
+    OTHER = "other"
+
+
 class Confidence(StrEnum):
     LOW = "low"
     MEDIUM = "medium"

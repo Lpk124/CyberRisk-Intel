@@ -5,7 +5,8 @@ CyberRisk Intel 是一个面向网络安全研究的本地优先系统。它把�
 ## 已实现的 V1 能力
 
 - SQLAlchemy + SQLite 统一实体模型、来源、版本、复核记录与带证据关系。
-- 10 条政策、12 个事件、4 个漏洞、7 个 ATT&CK 技术的可核验演示闭环；这些数据不冒充最终 30/100 研究样本。
+- 30 条带官方来源的中国政策/治理文件、12 个事件、4 个漏洞、7 个 ATT&CK 技术的可核验闭环；事件数据仍是演示样本，不冒充最终 100 个事件研究语料。
+- 政策数据区分法律、行政法规、部门规章、规范性文件与技术框架，避免混淆约束效力。
 - CISA KEV 全量 JSON、MITRE Enterprise ATT&CK STIX 2.1、单个 CVE JSON 5.x 的在线同步命令。
 - SQLite FTS5/BM25、可选 Embedding、RRF 跨实体检索。
 - Security Risk Landscape、数据质量、局部两跳关系图与 CSV 下载。
@@ -18,20 +19,21 @@ CyberRisk Intel 是一个面向网络安全研究的本地优先系统。它把�
 
 ```powershell
 uv sync --extra dev
-uv run cyberrisk-intel init-db
+uv run alembic upgrade head
 uv run cyberrisk-intel seed-demo
 uv run streamlit run app.py
 ```
 
 打开终端显示的本地地址。也可以先进入空系统，再点击侧边栏“装载/刷新演示数据”。
 
-`init-db` 适合首次本地试用。需要显式数据库版本管理的环境使用：
+`init-db` 仅用于不需要迁移历史的一次性本地试用。正式开发环境使用上面的
+`alembic upgrade head`，不要在同一个空数据库上先后混用两种初始化方式。
 
 ```powershell
-uv run alembic upgrade head
+uv run cyberrisk-intel init-db
 ```
 
-初始迁移同时创建 SQLite FTS5 索引表；迁移已在独立空数据库上验证。
+应用启动时会幂等创建 SQLite FTS5 索引表；当前迁移链已在独立空数据库上验证。
 
 ## 数据同步
 
@@ -72,7 +74,7 @@ $env:CYBERRISK_EMBEDDING_MODEL="your-embedding-model"
 - 公开事件样本受披露、语言和来源覆盖影响，不代表真实发生率。
 - KEV 表示已知在野利用信号，不表示任一本地资产必然受影响。
 - 事件与 CVE/ATT&CK 的正式关系必须有证据并已复核；文本相似度只产生候选。
-- `data/demo` 是流程演示数据；V1 数据目标应通过独立、可追溯的数据建设完成。
+- `data/demo/policies.json` 已达到 30 条政策/治理文件目标，均保留主管部门来源；其摘要仍需按复核状态管理。事件数据仍是流程演示数据，100 个事件目标需通过独立、可追溯的数据建设完成。
 
 架构、数据字典、研究方法、测试策略与第三方边界见 [docs](docs/系统架构.md)。
 

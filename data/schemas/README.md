@@ -12,3 +12,7 @@ uv run cyberrisk-intel reindex
 每条事件必须至少包含一个 HTTP(S) 来源。政策 `clauses` 可为空；非空时，每项支持
 `clause_ref`、`hierarchy_path`、`title` 和必需的 `body`。导入使用稳定 `external_id`
 幂等更新，并在 `ingestion_run` 中记录发现、新增、更新和失败数量。
+
+政策 `document_type` 使用以下受控值：`law`、`administrative_regulation`、
+`departmental_rule`、`normative_document`、`national_standard`、
+`technical_framework` 或 `other`。该字段描述文件性质，不代表系统给出法律效力判断。
