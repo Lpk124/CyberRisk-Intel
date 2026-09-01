@@ -1,0 +1,19 @@
+{
+  "dataType": "CVE_RECORD",
+  "dataVersion": "5.1",
+  "cveMetadata": {
+    "cveId": "CVE-2024-9999",
+    "datePublished": "2024-05-01T00:00:00.000Z",
+    "dateUpdated": "2024-05-02T00:00:00.000Z",
+    "state": "PUBLISHED"
+  },
+  "containers": {
+    "cna": {
+      "descriptions": [{"lang": "en", "value": "A test vulnerability for parser verification."}],
+      "affected": [{"vendor": "Example", "product": "Widget", "versions": []}],
+      "problemTypes": [{"descriptions": [{"lang": "en", "description": "CWE-79", "cweId": "CWE-79"}]}],
+      "metrics": [{"cvssV3_1": {"baseScore": 7.5, "baseSeverity": "HIGH"}}]
+    },
+    "adp": [{"title": "CISA ADP", "descriptions": []}]
+  }
+}

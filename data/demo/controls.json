@@ -1,0 +1,26 @@
+{
+  "catalog": {
+    "name": "CyberRisk Intel Baseline",
+    "version": "0.1",
+    "publisher": "CyberRisk Intel",
+    "source_url": "https://www.nist.gov/cyberframework",
+    "license_name": "Original catalog informed by NIST CSF 2.0 and CISA CPG"
+  },
+  "controls": [
+    {"external_id": "CGI-GV-01", "title": "安全责任与风险所有权", "description": "明确安全风险、数据治理和第三方风险的责任人与复核机制。", "control_type": "process", "csf_function": "Govern"},
+    {"external_id": "CGI-GV-02", "title": "第三方与供应链治理", "description": "评估供应商安全能力、数据处理范围、通报义务和退出机制。", "control_type": "process", "csf_function": "Govern"},
+    {"external_id": "CGI-ID-01", "title": "资产与数据清单", "description": "持续维护系统、接口、依赖、账号和数据资产清单。", "control_type": "process", "csf_function": "Identify"},
+    {"external_id": "CGI-ID-02", "title": "漏洞与暴露面识别", "description": "识别互联网暴露资产并将KEV与业务资产关联排序。", "control_type": "technical", "csf_function": "Identify"},
+    {"external_id": "CGI-PR-01", "title": "最小权限与强认证", "description": "实施最小权限、多因素认证、短期凭证和特权访问管理。", "control_type": "technical", "csf_function": "Protect"},
+    {"external_id": "CGI-PR-02", "title": "补丁与缓解管理", "description": "基于在野利用、暴露程度和资产关键性安排修复或缓解。", "control_type": "process", "csf_function": "Protect"},
+    {"external_id": "CGI-PR-03", "title": "数据最小化与脱敏", "description": "限制数据收集、传输和留存，并在进入第三方或AI系统前脱敏。", "control_type": "technical", "csf_function": "Protect"},
+    {"external_id": "CGI-PR-04", "title": "安全更新与依赖验证", "description": "验证更新来源、签名、SBOM和关键依赖完整性。", "control_type": "technical", "csf_function": "Protect"},
+    {"external_id": "CGI-PR-05", "title": "API鉴权与限流", "description": "对接口实施对象级授权、强鉴权、限流和敏感响应最小化。", "control_type": "technical", "csf_function": "Protect"},
+    {"external_id": "CGI-DE-01", "title": "集中日志与异常检测", "description": "集中记录身份、管理、API、数据访问和安全设备日志。", "control_type": "technical", "csf_function": "Detect"},
+    {"external_id": "CGI-DE-02", "title": "供应链与更新监测", "description": "监测软件依赖、更新渠道和第三方服务异常。", "control_type": "technical", "csf_function": "Detect"},
+    {"external_id": "CGI-RS-01", "title": "事件响应与通报", "description": "建立分级、隔离、证据保全、内外部通报和协调机制。", "control_type": "process", "csf_function": "Respond"},
+    {"external_id": "CGI-RS-02", "title": "凭证轮换与会话撤销", "description": "发生身份或令牌泄露时快速撤销会话并轮换密钥和凭证。", "control_type": "technical", "csf_function": "Respond"},
+    {"external_id": "CGI-RC-01", "title": "离线备份与恢复演练", "description": "维护隔离备份并定期验证关键业务恢复时间与数据完整性。", "control_type": "technical", "csf_function": "Recover"},
+    {"external_id": "CGI-RC-02", "title": "事件复盘与控制改进", "description": "基于根因、影响和响应证据更新控制、监测和演练。", "control_type": "process", "csf_function": "Recover"}
+  ]
+}

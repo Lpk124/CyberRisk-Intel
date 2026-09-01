@@ -1,0 +1,23 @@
+{
+  "type": "bundle",
+  "id": "bundle--test",
+  "objects": [
+    {
+      "type": "x-mitre-tactic",
+      "id": "x-mitre-tactic--test",
+      "name": "Initial Access",
+      "description": "Entry techniques.",
+      "external_references": [{"source_name": "mitre-attack", "external_id": "TA0001"}]
+    },
+    {
+      "type": "attack-pattern",
+      "id": "attack-pattern--test",
+      "name": "Exploit Public-Facing Application",
+      "description": "Adversaries may exploit an internet-facing host.",
+      "x_mitre_platforms": ["Linux", "Windows"],
+      "x_mitre_version": "1.0",
+      "kill_chain_phases": [{"kill_chain_name": "mitre-attack", "phase_name": "initial-access"}],
+      "external_references": [{"source_name": "mitre-attack", "external_id": "T1190", "url": "https://attack.mitre.org/techniques/T1190/"}]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+[
+  {"code": "TECH", "name": "信息技术与互联网"},
+  {"code": "FIN", "name": "金融"},
+  {"code": "HEALTH", "name": "医疗健康"},
+  {"code": "GOV", "name": "政府与公共部门"},
+  {"code": "ENERGY", "name": "能源与公用事业"},
+  {"code": "RETAIL", "name": "零售与电子商务"},
+  {"code": "MANUFACTURING", "name": "制造业"},
+  {"code": "EDU", "name": "教育科研"},
+  {"code": "TRANSPORT", "name": "交通运输"},
+  {"code": "CROSS", "name": "跨行业"}
+]

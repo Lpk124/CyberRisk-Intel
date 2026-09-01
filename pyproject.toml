@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cyberrisk-intel"
+version = "0.1.0"
+description = "Cyber Governance & Risk Intelligence research platform"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "MIT" }
+authors = [{ name = "CyberRisk Intel Contributors" }]
+dependencies = [
+  "alembic>=1.14,<2",
+  "beautifulsoup4>=4.13,<5",
+  "jieba>=0.42.1,<1",
+  "networkx>=3.4,<4",
+  "numpy>=2.1,<3",
+  "pandas>=2.2,<4",
+  "plotly>=5.24,<7",
+  "pydantic>=2.10,<3",
+  "requests>=2.32,<3",
+  "scikit-learn>=1.6,<2",
+  "sqlalchemy>=2.0.36,<3",
+  "streamlit>=1.41,<2",
+  "trafilatura>=2.0,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.14,<2",
+  "pytest>=9.0.3,<10",
+  "pytest-cov>=6,<8",
+  "pip-audit>=2.8,<3",
+  "playwright>=1.55,<2",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+cyberrisk-intel = "cyberrisk_intel.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cyberrisk_intel"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/cyberrisk_intel",
+  "app.py",
+  "alembic.ini",
+  "migrations",
+  "data/demo",
+  "data/schemas",
+  "data/taxonomies",
+  "docs",
+  "scripts",
+  "README.md",
+  "LICENSE",
+  "THIRD_PARTY_NOTICES.md",
+  "pyproject.toml",
+]
+exclude = [".venv", ".uv-cache", "data/raw", "data/processed", "reports/generated"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --disable-warnings"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+packages = ["cyberrisk_intel"]
+ignore_missing_imports = true
+warn_unused_ignores = true

@@ -1,0 +1,12 @@
+[
+  {"code": "R-DATA-EXPOSURE", "name": "数据泄露与暴露", "description": "敏感数据、个人信息或业务数据被未授权访问、披露或公开。", "impact_dimensions": ["confidentiality", "privacy", "legal", "reputation"]},
+  {"code": "R-IDENTITY", "name": "身份与凭证滥用", "description": "凭证盗用、会话劫持或身份验证薄弱导致的未授权活动。", "impact_dimensions": ["confidentiality", "integrity"]},
+  {"code": "R-SUPPLY", "name": "供应链风险", "description": "第三方软件、服务商、依赖或更新渠道引入的安全风险。", "impact_dimensions": ["confidentiality", "integrity", "availability"]},
+  {"code": "R-RANSOM", "name": "勒索与破坏", "description": "加密、擦除或破坏系统与数据并造成业务中断。", "impact_dimensions": ["availability", "financial", "operational"]},
+  {"code": "R-VULN", "name": "漏洞利用", "description": "已知或未知软件漏洞被利用形成未授权访问或执行。", "impact_dimensions": ["confidentiality", "integrity", "availability"]},
+  {"code": "R-API", "name": "API与接口风险", "description": "鉴权、授权、速率限制或接口配置缺陷引发的风险。", "impact_dimensions": ["confidentiality", "integrity", "availability"]},
+  {"code": "R-AI", "name": "AI与模型风险", "description": "模型、训练数据、提示、输出或AI供应链引发的安全与治理风险。", "impact_dimensions": ["confidentiality", "integrity", "safety", "legal"]},
+  {"code": "R-PRIVACY", "name": "个人信息与隐私风险", "description": "个人信息处理缺少合法性、透明度、最小化或必要保护。", "impact_dimensions": ["privacy", "legal", "reputation"]},
+  {"code": "R-AVAIL", "name": "服务可用性风险", "description": "攻击、配置或依赖故障导致关键服务不可用。", "impact_dimensions": ["availability", "operational", "financial"]},
+  {"code": "R-GOV", "name": "治理与响应不足", "description": "监测、响应、复盘、责任或第三方治理机制不足。", "impact_dimensions": ["legal", "operational", "reputation"]}
+]

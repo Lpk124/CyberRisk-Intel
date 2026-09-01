@@ -1,0 +1,12 @@
+[
+  {"code": "TP-RANSOMWARE", "name": "勒索软件", "description": "使用加密、数据窃取或破坏手段实施勒索。"},
+  {"code": "TP-SUPPLY-CHAIN", "name": "供应链攻击", "description": "通过软件、依赖、更新或服务商攻击最终目标。"},
+  {"code": "TP-PHISHING", "name": "钓鱼与社会工程", "description": "利用欺骗获取凭证、执行代码或绕过流程。"},
+  {"code": "TP-CREDENTIAL", "name": "凭证攻击", "description": "使用泄露、窃取或弱凭证访问系统。"},
+  {"code": "TP-PUBLIC-APP", "name": "互联网暴露应用利用", "description": "利用面向互联网的应用或设备漏洞。"},
+  {"code": "TP-API", "name": "API滥用", "description": "利用接口鉴权、授权、配置或业务逻辑缺陷。"},
+  {"code": "TP-CLOUD", "name": "云配置与数据暴露", "description": "云服务配置、权限或密钥问题造成暴露。"},
+  {"code": "TP-AI", "name": "AI系统攻击与滥用", "description": "针对模型、提示、训练数据或AI代理的攻击与滥用。"},
+  {"code": "TP-MALWARE", "name": "恶意软件", "description": "通过恶意代码窃取、控制或破坏系统。"},
+  {"code": "TP-OUTAGE", "name": "安全相关服务中断", "description": "安全软件、更新或依赖故障造成的大范围中断。"}
+]
