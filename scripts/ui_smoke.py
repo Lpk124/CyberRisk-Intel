@@ -25,6 +25,9 @@ def main() -> None:
         page.on("requestfailed", lambda request: failed_requests.append(request.url))
         page.goto("http://127.0.0.1:8501", wait_until="networkidle")
         page.get_by_text("网络安全风险态势总览", exact=True).wait_for()
+        page.get_by_text("已审计关系", exact=True).wait_for()
+        page.get_by_text("数据快照", exact=False).wait_for()
+        page.wait_for_timeout(750)
         page.screenshot(path=str(OUTPUT / "overview.png"), full_page=True)
 
         for page_name, expected in [

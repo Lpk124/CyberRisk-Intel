@@ -1,6 +1,19 @@
 # Cyber Governance & Risk Intelligence
 
-CyberRisk Intel 是一个面向网络安全研究的本地优先系统。它把中国网络安全政策、全球公开安全事件、CVE/KEV、MITRE ATT&CK、风险主题与控制措施整理为可检索、可分析、可追溯的数据，而不是法律问答机器人或企业合规打分工具。
+[![CI](https://github.com/Lpk124/CyberRisk-Intel/actions/workflows/ci.yml/badge.svg)](https://github.com/Lpk124/CyberRisk-Intel/actions/workflows/ci.yml)
+
+CyberRisk Intel 是一个面向网络安全研究的本地优先系统。它把中国网络安全政策、全球公开安全事件、CVE/KEV、MITRE ATT&CK、风险主题与控制措施整理为可检索、可分析、可追溯的数据。
+
+## 项目预览
+
+![CyberRisk Intel 风险态势总览](figures/overview-dashboard.png)
+
+## 系统架构
+
+![CyberRisk Intel 系统架构](figures/system-architecture.png)
+
+架构图的可编辑 Mermaid 源码见
+[`figures/system-architecture.mmd`](figures/system-architecture.mmd)。
 
 ## 已实现的 V1 能力
 

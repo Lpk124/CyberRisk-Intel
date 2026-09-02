@@ -23,5 +23,7 @@ reports/generated/*
 !reports/generated/.gitkeep
 playwright-report/
 output/playwright/
+output/build/
+output/pip-audit-cache/
 test-results/
 .streamlit/secrets.toml

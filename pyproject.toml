@@ -53,6 +53,7 @@ include = [
   "data/schemas",
   "data/taxonomies",
   "docs",
+  "figures",
   "scripts",
   "README.md",
   "LICENSE",
