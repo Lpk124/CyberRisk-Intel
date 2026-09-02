@@ -69,7 +69,7 @@ def _documents(session: Session) -> list[IndexDocument]:
                 title,
                 body,
                 None,
-                event.incident_date,
+                event.incident_date or event.disclosed_date,
                 "zh" if event.title_zh else "en",
             )
         )

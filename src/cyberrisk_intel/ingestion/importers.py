@@ -224,6 +224,7 @@ def import_events(session: Session, path: Path) -> IngestionStats:
             event.summary = item.summary
             event.summary_zh = item.summary_zh
             event.incident_date = item.incident_date
+            event.incident_end_date = item.incident_end_date
             event.disclosed_date = item.disclosed_date
             event.region = item.region
             event.organization = item.organization

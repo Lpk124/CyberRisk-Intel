@@ -22,6 +22,18 @@ def overview_metrics(session: Session) -> dict[str, int | str]:
     return {
         "policies": session.scalar(select(func.count()).select_from(Policy)) or 0,
         "events": session.scalar(select(func.count()).select_from(SecurityEvent)) or 0,
+        "published_events": session.scalar(
+            select(func.count())
+            .select_from(SecurityEvent)
+            .where(SecurityEvent.review_status == "published")
+        )
+        or 0,
+        "pending_events": session.scalar(
+            select(func.count())
+            .select_from(SecurityEvent)
+            .where(SecurityEvent.review_status == "pending_review")
+        )
+        or 0,
         "vulnerabilities": session.scalar(select(func.count()).select_from(Vulnerability)) or 0,
         "attack_techniques": session.scalar(select(func.count()).select_from(AttackTechnique)) or 0,
         "kev": session.scalar(
@@ -36,13 +48,26 @@ def overview_metrics(session: Session) -> dict[str, int | str]:
 
 def monthly_events(session: Session) -> pd.DataFrame:
     rows = session.execute(
-        select(SecurityEvent.incident_date, SecurityEvent.normalized_severity)
+        select(
+            SecurityEvent.incident_date,
+            SecurityEvent.disclosed_date,
+            SecurityEvent.normalized_severity,
+        )
     ).all()
     if not rows:
-        return pd.DataFrame(columns=["month", "severity", "count"])
-    frame = pd.DataFrame(rows, columns=["incident_date", "severity"])
-    frame["month"] = pd.to_datetime(frame["incident_date"]).dt.to_period("M").astype(str)
-    return frame.groupby(["month", "severity"], dropna=False).size().reset_index(name="count")
+        return pd.DataFrame(columns=["month", "severity", "date_basis", "count"])
+    frame = pd.DataFrame(rows, columns=["incident_date", "disclosed_date", "severity"])
+    frame["analysis_date"] = frame["incident_date"].fillna(frame["disclosed_date"])
+    frame["date_basis"] = frame["incident_date"].notna().map(
+        {True: "incident_date", False: "disclosed_date"}
+    )
+    frame = frame.dropna(subset=["analysis_date"])
+    frame["month"] = pd.to_datetime(frame["analysis_date"]).dt.to_period("M").astype(str)
+    return (
+        frame.groupby(["month", "severity", "date_basis"], dropna=False)
+        .size()
+        .reset_index(name="count")
+    )
 
 
 def policy_document_distribution(session: Session) -> pd.DataFrame:
@@ -77,13 +102,16 @@ def event_industry_matrix(session: Session) -> pd.DataFrame:
     rows = session.execute(
         select(
             SecurityEvent.incident_date,
+            SecurityEvent.disclosed_date,
             SecurityEvent.normalized_severity,
             SecurityEvent.industry_id,
         )
     ).all()
     if not rows:
         return pd.DataFrame(columns=["industry_id", "severity", "count"])
-    frame = pd.DataFrame(rows, columns=["incident_date", "severity", "industry_id"])
+    frame = pd.DataFrame(
+        rows, columns=["incident_date", "disclosed_date", "severity", "industry_id"]
+    )
     return frame.groupby(["industry_id", "severity"], dropna=False).size().reset_index(name="count")
 
 
@@ -96,6 +124,30 @@ def relation_distribution(session: Session, object_type: str) -> pd.DataFrame:
         .group_by(EntityRelation.object_id)
     ).all()
     return pd.DataFrame(rows, columns=["entity_id", "count"])
+
+
+def event_source_coverage(session: Session) -> pd.DataFrame:
+    rows = session.execute(
+        select(
+            Source.name,
+            Source.publisher,
+            Source.region,
+            Source.source_type,
+            func.count(EventSource.event_id.distinct()),
+        )
+        .join(EventSource, EventSource.source_id == Source.id)
+        .group_by(Source.id, Source.name, Source.publisher, Source.region, Source.source_type)
+        .order_by(func.count(EventSource.event_id.distinct()).desc())
+    ).all()
+    frame = pd.DataFrame(
+        rows, columns=["source", "publisher", "region", "source_type", "event_count"]
+    )
+    if frame.empty:
+        frame["share"] = pd.Series(dtype=float)
+        return frame
+    total_events = session.scalar(select(func.count()).select_from(SecurityEvent)) or 0
+    frame["share"] = frame["event_count"] / total_events if total_events else 0.0
+    return frame
 
 
 def data_quality(session: Session) -> pd.DataFrame:
@@ -113,6 +165,8 @@ def data_quality(session: Session) -> pd.DataFrame:
             for event in events
         ),
         "事件已复核": sum(event.review_status == "published" for event in events),
+        "事件有已知发生日期": sum(event.incident_date is not None for event in events),
+        "事件有披露日期": sum(event.disclosed_date is not None for event in events),
         "事件有根因": sum(bool(event.root_cause) for event in events),
         "事件有行业": sum(bool(event.industry_id) for event in events),
     }

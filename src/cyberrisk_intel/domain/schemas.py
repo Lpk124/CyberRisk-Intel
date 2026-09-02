@@ -49,7 +49,8 @@ class EventInput(StrictModel):
     title_zh: str | None = Field(default=None, max_length=500)
     summary: str = Field(min_length=10)
     summary_zh: str | None = None
-    incident_date: date
+    incident_date: date | None = None
+    incident_end_date: date | None = None
     disclosed_date: date | None = None
     region: str = "Global"
     organization: str | None = Field(default=None, max_length=300)

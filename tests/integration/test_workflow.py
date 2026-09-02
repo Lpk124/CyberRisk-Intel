@@ -1,5 +1,6 @@
 from cyberrisk_intel.analytics.graph import neighborhood
 from cyberrisk_intel.analytics.landscape import (
+    event_source_coverage,
     overview_metrics,
     policy_document_distribution,
     policy_topic_timeline,
@@ -19,6 +20,7 @@ def test_seed_index_search_graph_report(session) -> None:
     session.flush()
     assert overview_metrics(session)["events"] == first_metrics["events"]
     assert policy_document_distribution(session)["count"].sum() == 30
+    assert not event_source_coverage(session).empty
     topic_timeline = policy_topic_timeline(session)
     assert not topic_timeline.empty
     assert topic_timeline["share"].between(0, 1).all()

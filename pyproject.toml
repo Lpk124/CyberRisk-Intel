@@ -19,6 +19,7 @@ dependencies = [
   "pandas>=2.2,<4",
   "plotly>=5.24,<7",
   "pydantic>=2.10,<3",
+  "pypdf>=6.0,<7",
   "requests>=2.32,<3",
   "scikit-learn>=1.6,<2",
   "sqlalchemy>=2.0.36,<3",

@@ -45,7 +45,10 @@ with st.sidebar:
             count = rebuild_index(seed_session)
         st.success(f"演示数据已装载，索引 {count} 个分块。")
         st.rerun()
-    st.caption("政策/治理文件已达 30 条；事件样本用于验证工作流，不代表 100 个事件目标已完成。")
+    st.caption(
+        "政策/治理文件已达 30 条；官方事件适配器可复现扩展至至少 100 条，"
+        "自动采集记录须经人工复核。"
+    )
 
 session = SessionFactory()
 try:

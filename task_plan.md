@@ -9,6 +9,8 @@ Build a real, locally runnable, tested Streamlit system that unifies policies, s
 - [x] Phase 3: Implement ingestion, unified retrieval, relations, and analytics
 - [x] Phase 4: Implement Streamlit UI, reports, review, and scenario demos
 - [x] Phase 5: Run tests, quality checks, startup checks, and update documentation
+- [x] Phase 6: Build at least 100 source-backed event records with four regulator adapters
+- [ ] Phase 7: Review/entity-resolve 91 imported candidates and build the 50-question RAG benchmark
 
 ## Key Questions
 1. Can the application run without any LLM or embedding credentials? Yes; lexical retrieval and deterministic reports are mandatory fallbacks.
@@ -18,7 +20,7 @@ Build a real, locally runnable, tested Streamlit system that unifies policies, s
 ## Decisions Made
 - Python 3.12, Streamlit, SQLAlchemy, SQLite, Pandas, Plotly, Pydantic.
 - Current repository is empty; there is no legacy code or data to migrate.
-- Policy seed data contains 30 source-verified policy/governance records; event seed data remains explicitly labeled demo data and is not presented as the final 100-event research corpus.
+- Policy seed data contains 30 source-verified policy/governance records. The local research database contains 103 source-backed event records: 12 published demo records and 91 regulator-imported candidates pending review.
 - KEV, ATT&CK, and CVE connectors are implemented as explicit commands; online synchronization is not required for offline tests.
 - AI and embeddings use an optional OpenAI-compatible interface and never gate core functionality.
 
@@ -33,7 +35,6 @@ Build a real, locally runnable, tested Streamlit system that unifies policies, s
   checks persisted and pending relations, and the integration fixture matches production.
 
 ## Status
-**In progress** - the runnable V1, reproducible environment, tests, security checks, browser smoke
-test, and initial documentation are finished. The 30-record policy target is complete. Event corpus
-expansion and the 50-question RAG benchmark remain data/research milestones and are not represented
-as completed results.
+**In progress** - the runnable V1, reproducible environment, 30-policy target, and 100-record event
+corpus construction are complete. Human review/entity resolution of 91 imported candidates and the
+50-question RAG benchmark remain research milestones and are not represented as completed results.

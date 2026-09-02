@@ -11,6 +11,8 @@
 - Published facts and relationships require provenance and review state.
 - Public-event counts are samples of collected disclosures, not incident prevalence.
 - AI output is always a candidate or cited research aid.
+- Unknown incident dates remain null; disclosure dates are never silently substituted.
+- Regulator feeds are capped per source and imported as pending review to limit coverage bias.
 
 ## Reference Boundaries
 - OpenCTI, CISO Assistant, and MISP contribute conceptual patterns only.
@@ -23,11 +25,12 @@
   4 vulnerabilities (3 KEV), 7 ATT&CK
   techniques, 15 baseline controls, and 3 validation scenarios.
 - Fresh seed relationship edges: 298; unified search chunks: 78.
-- Checks: build pass, Ruff pass, Mypy pass, 13 tests pass, 69% coverage, dependency audit clean.
+- Checks: build pass, Ruff pass, Mypy pass, 25 tests pass, 74% coverage, dependency audit clean.
 - Browser smoke test passed on six representative Streamlit pages using local Edge.
 - JSON policy/event imports are idempotent and audited; the initial Alembic migration was
   validated against an empty SQLite database.
 - Official sync plus expanded policy snapshot: 1,687 KEV entries, 858 ATT&CK techniques,
-  1,688 vulnerabilities, 298 relationship edges, and 2,613 indexed chunks. The synchronized
+  1,688 vulnerabilities, 583 relationship edges, and 2,613 indexed chunks. The synchronized
   SQLite database remains local and is not committed.
-- Two official download snapshots are stored under ignored `data/raw` paths and registered by hash.
+- Official download snapshots are stored under ignored `data/raw` paths and registered by hash.
+- Event corpus construction now uses HHS OCR, California DOJ, Massachusetts OCABR, and Washington AGO. The local database contains 103 source-backed records (12 published, 91 pending review); raw files and the database remain ignored.

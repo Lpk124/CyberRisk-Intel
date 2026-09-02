@@ -5,12 +5,13 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from cyberrisk_intel.analytics.graph import neighborhood
 from cyberrisk_intel.analytics.landscape import (
     data_quality,
+    event_source_coverage,
     monthly_events,
     overview_metrics,
     policy_document_distribution,
@@ -109,7 +110,11 @@ def search_page(session: Session) -> None:
 def events_page(session: Session) -> None:
     st.title("安全事件")
     events = list(
-        session.scalars(select(SecurityEvent).order_by(SecurityEvent.incident_date.desc()))
+        session.scalars(
+            select(SecurityEvent).order_by(
+                func.coalesce(SecurityEvent.incident_date, SecurityEvent.disclosed_date).desc()
+            )
+        )
     )
     if not events:
         st.info("暂无安全事件。")
@@ -119,7 +124,9 @@ def events_page(session: Session) -> None:
     frame = pd.DataFrame(
         [
             {
-                "date": e.incident_date,
+                "date": e.incident_date or e.disclosed_date,
+                "end_date": e.incident_end_date,
+                "date_basis": "事件日期" if e.incident_date else "披露日期",
                 "title": e.title_zh or e.title,
                 "organization": e.organization,
                 "severity": e.normalized_severity,
@@ -133,6 +140,13 @@ def events_page(session: Session) -> None:
     st.download_button("下载事件数据", _csv(frame), "security-events.csv", "text/csv")
     chosen = st.selectbox("查看事件详情", filtered, format_func=lambda e: e.title_zh or e.title)
     st.write(chosen.summary_zh or chosen.summary)
+    if chosen.incident_date:
+        date_range = str(chosen.incident_date)
+        if chosen.incident_end_date and chosen.incident_end_date != chosen.incident_date:
+            date_range += f" 至 {chosen.incident_end_date}"
+        st.caption(f"事件时间：{date_range}｜披露日期：{chosen.disclosed_date or '未知'}")
+    else:
+        st.caption(f"事件发生日期：未知｜披露日期：{chosen.disclosed_date or '未知'}")
     st.markdown(f"**根因：** {chosen.root_cause or '未知'}  \n**影响：** {chosen.impact or '未知'}")
     sources = session.execute(
         select(Source, EventSource)
@@ -372,6 +386,21 @@ def trends_page(session: Session) -> None:
     st.dataframe(
         quality.style.format({"rate": "{:.1%}"}), hide_index=True, width="stretch"
     )
+    coverage = event_source_coverage(session)
+    st.subheader("事件来源覆盖")
+    if not coverage.empty:
+        st.dataframe(
+            coverage.style.format({"share": "{:.1%}"}), hide_index=True, width="stretch"
+        )
+        st.download_button(
+            "下载来源覆盖数据", _csv(coverage), "event-source-coverage.csv", "text/csv"
+        )
+        largest_share = float(coverage["share"].max())
+        if largest_share > 0.4:
+            st.warning(
+                f"当前单一来源最多覆盖 {largest_share:.1%} 的事件记录；"
+                "跨行业或跨地域结论需等待来源继续扩展。"
+            )
     st.caption("公开样本存在来源覆盖和披露偏差；本页面只提供描述性分析，不进行因果推断。")
 
 

@@ -305,6 +305,7 @@ def seed_events(session: Session) -> None:
                 summary=item.summary,
                 summary_zh=item.summary_zh,
                 incident_date=item.incident_date,
+                incident_end_date=item.incident_end_date,
                 disclosed_date=item.disclosed_date,
                 region=item.region,
                 organization=item.organization,

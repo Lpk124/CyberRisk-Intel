@@ -1,0 +1,8 @@
+2026 Data Breach Notification Report
+The total number of breaches affecting residents: 1,234
+Breach Date Reporting Organization Name Reporting Organization Type MA Residents Affected
+ 2026-1  01-Jan-26  Example Technology LLC  Technology  1,200  Yes  No  Yes  No  No
+2026-2  02-Jan-26  Example Financial
+ Services LLC  Financial Services Company  15  Yes  No  No  No  No
+
+ 2026-3  03-Jan-26  Example Clinic Inc.  Health Care  34  No  Yes  No  No  No

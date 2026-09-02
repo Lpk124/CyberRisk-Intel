@@ -11,6 +11,19 @@ from cyberrisk_intel.db.repository import get_or_create_source
 from cyberrisk_intel.ingestion.http import Download
 
 
+def _snapshot_extension(content_type: str) -> str:
+    normalized = content_type.lower()
+    if "pdf" in normalized:
+        return ".pdf"
+    if "html" in normalized:
+        return ".html"
+    if "csv" in normalized:
+        return ".csv"
+    if "xml" in normalized:
+        return ".xml"
+    return ".json"
+
+
 def record_download(
     session: Session,
     item: Download,
@@ -38,7 +51,10 @@ def record_download(
         / "data"
         / "raw"
         / source_type
-        / f"{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{item.sha256[:16]}.json"
+        / (
+            f"{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{item.sha256[:16]}"
+            f"{_snapshot_extension(item.content_type)}"
+        )
     )
     snapshot_path.parent.mkdir(parents=True, exist_ok=True)
     if not snapshot_path.exists():

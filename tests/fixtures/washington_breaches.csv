@@ -1,0 +1,3 @@
+"DateAware","DateSubmitted","DataBreachCause","DateStart","DateEnd","Name","Id","CyberattackType","WashingtoniansAffected","IndustryType","BusinessType"
+"2026 Jul 30 12:00:00 AM","2026 Aug 21 12:00:00 AM","Cyberattack","2026 Jul 28 12:00:00 AM","2026 Jul 29 12:00:00 AM","Example Retail LLC","25,260","Ransomware","1,929","Business","Retail"
+"2026 Jul 15 12:00:00 AM","2026 Aug 19 12:00:00 AM","Unauthorized Access",,,"Example Clinic","25,166",,"992","Health",""

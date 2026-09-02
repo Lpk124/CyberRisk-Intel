@@ -5,7 +5,7 @@ CyberRisk Intel 是一个面向网络安全研究的本地优先系统。它把�
 ## 已实现的 V1 能力
 
 - SQLAlchemy + SQLite 统一实体模型、来源、版本、复核记录与带证据关系。
-- 30 条带官方来源的中国政策/治理文件、12 个事件、4 个漏洞、7 个 ATT&CK 技术的可核验闭环；事件数据仍是演示样本，不冒充最终 100 个事件研究语料。
+- 30 条带官方来源的中国政策/治理文件，以及可复现扩展至至少 100 条的事件语料工作流。仓库内提交 12 条已发布演示事件；HHS OCR、California DOJ、Massachusetts OCABR 和 Washington AGO 适配器生成的记录默认进入待复核队列。
 - 政策数据区分法律、行政法规、部门规章、规范性文件与技术框架，避免混淆约束效力。
 - CISA KEV 全量 JSON、MITRE Enterprise ATT&CK STIX 2.1、单个 CVE JSON 5.x 的在线同步命令。
 - SQLite FTS5/BM25、可选 Embedding、RRF 跨实体检索。
@@ -41,11 +41,21 @@ uv run cyberrisk-intel init-db
 uv run cyberrisk-intel sync-kev
 uv run cyberrisk-intel sync-attack
 uv run cyberrisk-intel fetch-cve CVE-2024-3094
+uv run cyberrisk-intel sync-hhs-breaches --limit 25
+uv run cyberrisk-intel sync-california-breaches --limit 25
+uv run cyberrisk-intel sync-massachusetts-breaches --limit 25 --year 2026
+uv run cyberrisk-intel sync-washington-breaches --limit 13
 uv run cyberrisk-intel reindex
 uv run cyberrisk-intel generate-report ai-data-governance
 ```
 
-在线命令会访问官方公开源。同步后运行 `reindex`。原始大文件和本地数据库默认不提交 Git。
+在线命令会访问官方公开源。事件适配器默认限制单一来源批次规模，保留未知日期，不推断 CVE/ATT&CK，并把关系标为待复核。同步后运行 `reindex`。原始大文件和本地数据库默认不提交 Git。
+
+Mass.gov 可能拒绝带透明研究客户端 User-Agent 的自动请求。此时可从官方报告页下载 PDF 后使用本地文件入口，仍会记录官方 URL、内容哈希和不可变快照：
+
+```powershell
+uv run cyberrisk-intel sync-massachusetts-breaches --year 2026 --limit 25 --file path/to/report.pdf
+```
 
 自有核验数据可按 `data/demo` 的 JSON 结构导入：
 
@@ -74,7 +84,9 @@ $env:CYBERRISK_EMBEDDING_MODEL="your-embedding-model"
 - 公开事件样本受披露、语言和来源覆盖影响，不代表真实发生率。
 - KEV 表示已知在野利用信号，不表示任一本地资产必然受影响。
 - 事件与 CVE/ATT&CK 的正式关系必须有证据并已复核；文本相似度只产生候选。
-- `data/demo/policies.json` 已达到 30 条政策/治理文件目标，均保留主管部门来源；其摘要仍需按复核状态管理。事件数据仍是流程演示数据，100 个事件目标需通过独立、可追溯的数据建设完成。
+- `data/demo/policies.json` 已达到 30 条政策/治理文件目标，均保留主管部门来源；其摘要仍需按复核状态管理。
+- 当前本地研究库已通过四个独立监管来源扩展至 103 条来源支持的事件记录，其中 12 条已发布、91 条待人工复核。数据库和原始快照不随 Git 提交，因此其他环境需运行同步命令复现。
+- 跨监管辖区可能出现同一底层事件的多份通知。未经证据核验不自动合并，研究分析应筛选已复核记录或报告实体消歧状态。
 
 架构、数据字典、研究方法、测试策略与第三方边界见 [docs](docs/系统架构.md)。
 
